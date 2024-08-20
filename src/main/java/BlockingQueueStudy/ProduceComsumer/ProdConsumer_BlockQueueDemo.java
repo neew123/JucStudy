@@ -1,6 +1,7 @@
 package BlockingQueueStudy.ProduceComsumer;
 
 
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,7 +33,7 @@ class MyResource{
             }
             TimeUnit.SECONDS.sleep(1);
         }
-        System.out.println(Thread.currentThread().getName()+"\t 停止生产，FLAG=false");
+        System.out.println(Thread.currentThread().getName()+"\t 停止生产，FLAG=FALSE");
     }
 
     public void myConsumer() throws Exception{
@@ -42,15 +43,49 @@ class MyResource{
             if(null == result || result.equalsIgnoreCase("")){
                 FLAG = false;
                 System.out.println(Thread.currentThread().getName()+"\t 消费停止，FLAG=FALSE");
+                return;
             }
             System.out.println(Thread.currentThread().getName()+"\t 消费队列"+result+"成功");
         }
     }
 
-
+    public void stop() throws Exception{
+        this.FLAG = false;
+    }
 }
+
+/**
+ * volatile/CAS/AtomicInteger/BlockQueue/线程交互/原子引用
+ */
 public class ProdConsumer_BlockQueueDemo {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
+        MyResource myResource = new MyResource(new ArrayBlockingQueue<>(10));
+        new Thread(()->{
+            System.out.println(Thread.currentThread().getName()+"\t生产线程启动");
+            try {
+                myResource.myProd();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        },"Producer").start();
+
+        new Thread(()->{
+            System.out.println(Thread.currentThread().getName()+"\t消费线程启动");
+            try {
+                myResource.myConsumer();
+                System.out.println();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        },"Consumer").start();
+
+        try {TimeUnit.SECONDS.sleep(5);} catch (InterruptedException e) {throw new RuntimeException(e);}
+        System.out.println();
+        System.out.println();
+        System.out.println();
+
+        System.out.println("5s后，main线程结束生产消费过程");
+        myResource.stop();
 
     }
 }
