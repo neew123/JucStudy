@@ -26,19 +26,19 @@ public class SaleTicket {
         Ticket ticket=new Ticket();
         //线程操作资源类
         new Thread(()->{
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 11; i++) {
                 ticket.sale();
             }
         },"窗口1").start();
 
         new Thread(()->{
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 11; i++) {
                 ticket.sale();
             }
         },"窗口2").start();
 
         new Thread(()->{
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 11; i++) {
                 ticket.sale();
             }
         },"窗口3").start();
