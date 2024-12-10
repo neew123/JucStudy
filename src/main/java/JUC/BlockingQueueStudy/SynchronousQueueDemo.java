@@ -5,7 +5,7 @@ import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 同步队列
+ * 同步队列：生产者和消费者线程必须同时准备着
  */
 public class SynchronousQueueDemo {
 
